@@ -49,7 +49,7 @@ jobs:
         run: |
           php scripts/generate-stats.php
 
-      - name: Copy static files
+      - name: Copy static files to dist
         run: |
           # Copy static index.html if exists
           if [ -f public/index.html ]; then
@@ -60,28 +60,42 @@ jobs:
           if [ -f README.md ]; then
             cp README.md dist/
           fi
+          
+          # Add .nojekyll
+          touch dist/.nojekyll
 
-      - name: Deploy to gh-pages branch
+      - name: Deploy to public branch
         run: |
+          # Save current directory
+          REPO_DIR=$(pwd)
+          
           # Configure git
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
-          # Create/checkout gh-pages branch
-          git checkout --orphan gh-pages || git checkout gh-pages
+          # Move dist to temp location
+          mv dist /tmp/marketplace-build
           
-          # Remove all files from working directory
+          # Switch to public branch (create if doesn't exist)
+          if git show-ref --verify --quiet refs/heads/public; then
+            git checkout public
+          else
+            git checkout --orphan public
+          fi
+          
+          # Remove all existing files
           git rm -rf . 2>/dev/null || true
           rm -rf * .* 2>/dev/null || true
           
-          # Copy dist contents to root
-          cp -r dist/* .
-          rm -rf dist
-          
-          # Add .nojekyll to prevent Jekyll processing
-          touch .nojekyll
+          # Copy built files from temp to root
+          cp -r /tmp/marketplace-build/* .
+          cp /tmp/marketplace-build/.nojekyll .
           
           # Commit and push
           git add .
-          git commit -m "Deploy marketplace index - $(date '+%Y-%m-%d %H:%M:%S')" || exit 0
-          git push -f origin gh-pages
+          if git diff --staged --quiet; then
+            echo "No changes to deploy"
+          else
+            git commit -m "Deploy marketplace - $(date '+%Y-%m-%d %H:%M:%S')"
+            git push -f origin public
+          fi
