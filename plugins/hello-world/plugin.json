@@ -32,7 +32,7 @@
   "releases": [
     {
       "version": "1.0.0",
-      "downloadUrl": "https://github.com/Lemric/BatchRequest/archive/refs/tags/2.1.4.zip",
+      "downloadUrl": "https://codeload.github.com/Lemric/BatchRequest/zip/refs/tags/2.1.4",
       "releaseDate": "2025-01-01",
       "checksum": "sha256:def456789abc123...",
       "size": 50000,
