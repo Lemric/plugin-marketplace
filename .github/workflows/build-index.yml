@@ -81,7 +81,7 @@ jobs:
           fi
           
           # Clean working directory but KEEP .git
-          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} +
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' ! -name 'CNAME' -exec rm -rf {} +
           
           # Copy built files to root
           cp -r /tmp/marketplace-build/* .
