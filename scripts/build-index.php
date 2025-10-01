@@ -279,7 +279,7 @@ final class MarketplaceIndexBuilder
     private function getPublicUrl(string $path): string
     {
         // GitHub Pages URL - zmień na swój
-        $baseUrl = getenv('MARKETPLACE_URL') ?: 'https://YOUR-USERNAME.github.io/lemric-plugin-marketplace';
+        $baseUrl = getenv('MARKETPLACE_URL') ?: 'https://marketplace.lemric.com';
         return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
     }
 
