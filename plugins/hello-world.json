@@ -46,7 +46,7 @@
     ],
     "extra": {
         "featured": false,
-        "downloads": 150,
+        "downloads": 100,
         "rating": 4.5
     },
     "versions": [
@@ -63,8 +63,8 @@
     "readme": "# Hello World Plugin\n\nA simple example plugin for LemricPluginBundle that demonstrates the basic structure and functionality.",
     "changelog": "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n## [1.0.1] - 2025-01-15\n\n### Added\n- New Twig function `hello_world_with_time()`\n- Configuration option for timestamp format\n\n### Fixed\n- Fixed timezone handling in greeting messages\n- Corrected typo in configuration key\n\n### Changed\n- Improved hook documentation\n- Updated README with more examples\n\n## [1.0.0] - 2025-01-01\n\n### Added\n- Initial release\n- Basic greeting functionality\n- Hook system integration\n- Twig extension\n- Configuration support\n",
     "marketplace": {
-        "indexed": "2025-10-01T09:23:20+00:00",
-        "downloads": 150,
+        "indexed": "2025-10-01T10:15:42+00:00",
+        "downloads": 100,
         "rating": 4.5,
         "featured": false
     }

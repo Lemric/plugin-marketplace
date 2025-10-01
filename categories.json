@@ -1,12 +1,12 @@
 {
     "version": "1.0",
-    "generated": "2025-10-01T09:23:20+00:00",
+    "generated": "2025-10-01T10:15:42+00:00",
     "categories": [
         {
             "name": "utilities",
             "displayName": "Utilities",
             "count": 1,
-            "url": "https://YOUR-USERNAME.github.io/lemric-plugin-marketplace/categories/utilities.json"
+            "url": "https://marketplace.lemric.com/categories/utilities.json"
         }
     ]
 }
