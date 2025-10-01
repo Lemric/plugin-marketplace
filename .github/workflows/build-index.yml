@@ -3,7 +3,7 @@ name: Build Marketplace Index
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'plugins/**'
   workflow_dispatch:
@@ -66,33 +66,32 @@ jobs:
 
       - name: Deploy to public branch
         run: |
-          # Save current directory
-          REPO_DIR=$(pwd)
-          
           # Configure git
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
-          # Move dist to temp location
-          mv dist /tmp/marketplace-build
+          # Save dist to temp location BEFORE changing branches
+          cp -r dist /tmp/marketplace-build
           
-          # Switch to public branch (create if doesn't exist)
-          if git show-ref --verify --quiet refs/heads/public; then
+          # Checkout/create public branch
+          if git show-ref --verify --quiet refs/remotes/origin/public; then
             git checkout public
           else
             git checkout --orphan public
           fi
           
-          # Remove all existing files
-          git rm -rf . 2>/dev/null || true
-          rm -rf * .* 2>/dev/null || true
+          # Clean working directory but KEEP .git
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} +
           
-          # Copy built files from temp to root
+          # Copy built files to root
           cp -r /tmp/marketplace-build/* .
-          cp /tmp/marketplace-build/.nojekyll .
+          cp /tmp/marketplace-build/.nojekyll . 2>/dev/null || true
+          
+          # Cleanup temp
+          rm -rf /tmp/marketplace-build
           
           # Commit and push
-          git add .
+          git add -A
           if git diff --staged --quiet; then
             echo "No changes to deploy"
           else
