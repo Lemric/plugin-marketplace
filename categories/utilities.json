@@ -1,0 +1,14 @@
+{
+    "category": "utilities",
+    "count": 1,
+    "plugins": [
+        {
+            "name": "hello-world",
+            "displayName": "Hello World Plugin",
+            "version": "1.0.0",
+            "description": "A simple example plugin that demonstrates the basic structure and functionality",
+            "author": "Lemric Team",
+            "detailsUrl": "https://YOUR-USERNAME.github.io/lemric-plugin-marketplace/plugins/hello-world.json"
+        }
+    ]
+}

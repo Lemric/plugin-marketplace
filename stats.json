@@ -1,0 +1,40 @@
+{
+    "generated": "2025-10-01T09:23:20+00:00",
+    "lastUpdate": "2025-10-01T09:23:20+00:00",
+    "totalPlugins": 1,
+    "totalCategories": 1,
+    "totalDownloads": 150,
+    "averageRating": 4.5,
+    "featuredPlugins": 0,
+    "mostDownloaded": [
+        {
+            "name": "hello-world",
+            "displayName": "Hello World Plugin",
+            "downloads": 150
+        }
+    ],
+    "topRated": [
+        {
+            "name": "hello-world",
+            "displayName": "Hello World Plugin",
+            "rating": 4.5
+        }
+    ],
+    "recentlyUpdated": [
+        {
+            "name": "hello-world",
+            "displayName": "Hello World Plugin",
+            "version": "1.0.0",
+            "updated": "2025-10-01T09:23:20+00:00"
+        }
+    ],
+    "categoriesBreakdown": {
+        "utilities": 1
+    },
+    "tagsCloud": {
+        "example": 1,
+        "demo": 1,
+        "tutorial": 1,
+        "starter": 1
+    }
+}

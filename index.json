@@ -1,0 +1,27 @@
+{
+    "version": "1.0",
+    "generated": "2025-10-01T09:23:20+00:00",
+    "totalPlugins": 1,
+    "plugins": {
+        "hello-world": {
+            "name": "hello-world",
+            "displayName": "Hello World Plugin",
+            "version": "1.0.0",
+            "description": "A simple example plugin that demonstrates the basic structure and functionality",
+            "author": "Lemric Team",
+            "category": "utilities",
+            "tags": [
+                "example",
+                "demo",
+                "tutorial",
+                "starter"
+            ],
+            "homepage": "https://github.com/lemric/hello-world-plugin",
+            "screenshot": null,
+            "downloads": 150,
+            "rating": 4.5,
+            "featured": false,
+            "detailsUrl": "https://YOUR-USERNAME.github.io/lemric-plugin-marketplace/plugins/hello-world.json"
+        }
+    }
+}

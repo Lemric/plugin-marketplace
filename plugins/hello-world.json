@@ -1,0 +1,71 @@
+{
+    "name": "hello-world",
+    "displayName": "Hello World Plugin",
+    "version": "1.0.0",
+    "description": "A simple example plugin that demonstrates the basic structure and functionality",
+    "longDescription": "This is a comprehensive example plugin that shows how to create, structure, and deploy a plugin for LemricPluginBundle. It includes hooks, configuration, and services.",
+    "author": "Lemric Team",
+    "authorEmail": "support@lemric.com",
+    "authorUrl": "https://lemric.com",
+    "license": "MIT",
+    "homepage": "https://github.com/lemric/hello-world-plugin",
+    "repository": "https://github.com/lemric/hello-world-plugin",
+    "documentation": "https://docs.lemric.com/plugins/hello-world",
+    "category": "utilities",
+    "tags": [
+        "example",
+        "demo",
+        "tutorial",
+        "starter"
+    ],
+    "mainClass": "Lemric\\Plugins\\HelloWorld\\HelloWorldPlugin",
+    "icon": "icon.svg",
+    "minCompatibility": "7.3",
+    "maxCompatibility": "7.4",
+    "requires": {
+        "php": ">=8.4",
+        "symfony": ">=7.3",
+        "lemric/plugin-bundle": "^1.0"
+    },
+    "dependencies": [],
+    "conflicts": [],
+    "autoload": {
+        "psr-4": {
+            "Lemric\\Plugins\\HelloWorld\\": "src/"
+        }
+    },
+    "releases": [
+        {
+            "version": "1.0.0",
+            "downloadUrl": "https://codeload.github.com/Lemric/BatchRequest/zip/refs/tags/2.1.4",
+            "releaseDate": "2025-01-01",
+            "checksum": "sha256:3db7da68b1807f8580bf89a0dd531cddcd6e4fcfed5dbd8fd86ef54b212bbe5b",
+            "size": 50000,
+            "notes": "Initial release"
+        }
+    ],
+    "extra": {
+        "featured": false,
+        "downloads": 150,
+        "rating": 4.5
+    },
+    "versions": [
+        {
+            "version": "1.0.0",
+            "downloadUrl": "https://codeload.github.com/Lemric/BatchRequest/zip/refs/tags/2.1.4",
+            "releaseDate": "2025-01-01",
+            "checksum": "sha256:3db7da68b1807f8580bf89a0dd531cddcd6e4fcfed5dbd8fd86ef54b212bbe5b",
+            "size": 50000,
+            "notes": "Initial release"
+        }
+    ],
+    "latestVersion": "1.0.0",
+    "readme": "# Hello World Plugin\n\nA simple example plugin for LemricPluginBundle that demonstrates the basic structure and functionality.",
+    "changelog": "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n## [1.0.1] - 2025-01-15\n\n### Added\n- New Twig function `hello_world_with_time()`\n- Configuration option for timestamp format\n\n### Fixed\n- Fixed timezone handling in greeting messages\n- Corrected typo in configuration key\n\n### Changed\n- Improved hook documentation\n- Updated README with more examples\n\n## [1.0.0] - 2025-01-01\n\n### Added\n- Initial release\n- Basic greeting functionality\n- Hook system integration\n- Twig extension\n- Configuration support\n",
+    "marketplace": {
+        "indexed": "2025-10-01T09:23:20+00:00",
+        "downloads": 150,
+        "rating": 4.5,
+        "featured": false
+    }
+}
