@@ -1,0 +1,42 @@
+{
+  "name": "lemric/plugin-marketplace",
+  "description": "Official marketplace for LemricPluginBundle plugins",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lemric Team",
+      "email": "support@lemric.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.4",
+    "ext-json": "*",
+    "ext-zip": "*"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.88",
+    "phpstan/phpstan": "^2.0",
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lemric\\Marketplace\\": "src/"
+    }
+  },
+  "scripts": {
+    "validate": "php scripts/validate-all-plugins.php",
+    "build": "php scripts/build-index.php",
+    "stats": "php scripts/generate-stats.php",
+    "full-build": [
+      "@validate",
+      "@build",
+      "@stats"
+    ],
+    "validate-plugin": "php scripts/validate-plugin.php"
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}

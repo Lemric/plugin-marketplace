@@ -1,0 +1,220 @@
+name: Validate Plugin Submission
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, json, zip
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          composer install --no-dev --optimize-autoloader
+
+      - name: Detect changed plugins
+        id: changes
+        run: |
+          # Znajdź zmienione foldery w plugins/
+          CHANGED_PLUGINS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '^plugins/' | cut -d/ -f2 | sort -u)
+          echo "Changed plugins:"
+          echo "$CHANGED_PLUGINS"
+          echo "plugins<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_PLUGINS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Validate plugins
+        id: validation
+        run: |
+          VALIDATION_RESULTS=""
+          OVERALL_STATUS="success"
+          
+          while IFS= read -r plugin; do
+            if [ -z "$plugin" ]; then
+              continue
+            fi
+          
+            echo "::group::Validating plugin: $plugin"
+          
+            # Uruchom walidację dla każdego pluginu
+            if php scripts/validate-plugin.php "plugins/$plugin"; then
+              VALIDATION_RESULTS="$VALIDATION_RESULTS\n✅ **$plugin**: Validation passed"
+            else
+              VALIDATION_RESULTS="$VALIDATION_RESULTS\n❌ **$plugin**: Validation failed - check logs"
+              OVERALL_STATUS="failure"
+            fi
+          
+            echo "::endgroup::"
+          done <<< "${{ steps.changes.outputs.plugins }}"
+          
+          echo "results<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$VALIDATION_RESULTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "status=$OVERALL_STATUS" >> $GITHUB_OUTPUT
+
+      - name: Check download URLs
+        id: security
+        run: |
+          SCAN_RESULTS=""
+          
+          while IFS= read -r plugin; do
+            if [ -z "$plugin" ]; then
+              continue
+            fi
+          
+            echo "::group::Checking download URLs: $plugin"
+          
+            manifest_file="plugins/$plugin/plugin.json"
+            if [ ! -f "$manifest_file" ]; then
+              continue
+            fi
+          
+            # Check if releases array exists and has downloadUrls
+            has_releases=$(jq '.releases | length' "$manifest_file")
+          
+            if [ "$has_releases" -eq 0 ]; then
+              SCAN_RESULTS="$SCAN_RESULTS\n❌ **$plugin**: No releases found"
+              continue
+            fi
+          
+            # Test each downloadUrl
+            urls=$(jq -r '.releases[].downloadUrl' "$manifest_file")
+            all_urls_ok=true
+          
+            while IFS= read -r url; do
+              if [ -z "$url" ]; then
+                continue
+              fi
+          
+              echo "Testing URL: $url"
+          
+              # Test if URL is accessible (HEAD request)
+              http_code=$(curl -s -o /dev/null -w "%{http_code}" -L "$url" --max-time 10 || echo "000")
+          
+              if [ "$http_code" = "200" ]; then
+                echo "✓ URL accessible: $url"
+              else
+                SCAN_RESULTS="$SCAN_RESULTS\n⚠️ **$plugin**: URL returned HTTP $http_code: $url"
+                all_urls_ok=false
+              fi
+            done <<< "$urls"
+          
+            if [ "$all_urls_ok" = true ]; then
+              SCAN_RESULTS="$SCAN_RESULTS\n✅ **$plugin**: All download URLs accessible"
+            fi
+          
+            echo "::endgroup::"
+          done <<< "${{ steps.changes.outputs.plugins }}"
+          
+          echo "results<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$SCAN_RESULTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check manifest requirements
+        id: manifest
+        run: |
+          MANIFEST_RESULTS=""
+          
+          while IFS= read -r plugin; do
+            if [ -z "$plugin" ]; then
+              continue
+            fi
+          
+            manifest_file="plugins/$plugin/plugin.json"
+          
+            if [ ! -f "$manifest_file" ]; then
+              MANIFEST_RESULTS="$MANIFEST_RESULTS\n❌ **$plugin**: Missing plugin.json"
+              continue
+            fi
+          
+            # Sprawdź wymagane pola
+            required_fields=("name" "version" "description" "author" "license" "mainClass")
+            all_present=true
+          
+            for field in "${required_fields[@]}"; do
+              if ! jq -e ".$field" "$manifest_file" > /dev/null 2>&1; then
+                MANIFEST_RESULTS="$MANIFEST_RESULTS\n❌ **$plugin**: Missing required field: $field"
+                all_present=false
+              fi
+            done
+          
+            if [ "$all_present" = true ]; then
+              MANIFEST_RESULTS="$MANIFEST_RESULTS\n✅ **$plugin**: All required manifest fields present"
+            fi
+          done <<< "${{ steps.changes.outputs.plugins }}"
+          
+          echo "results<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$MANIFEST_RESULTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const validation = `${{ steps.validation.outputs.results }}`;
+            const security = `${{ steps.security.outputs.results }}`;
+            const manifest = `${{ steps.manifest.outputs.results }}`;
+            const status = `${{ steps.validation.outputs.status }}`;
+            
+            const icon = status === 'success' ? '✅' : '❌';
+            const statusText = status === 'success' ? 'PASSED' : 'FAILED';
+            
+            const body = `## ${icon} Plugin Validation ${statusText}
+            
+            ### Manifest Validation
+            ${manifest}
+            
+            ### Plugin Validation
+            ${validation}
+            
+            ### Download URL Check
+            ${security}
+            
+            ---
+            
+            ${status === 'success' ? 
+              '✅ All checks passed! Your plugin submission looks good.' : 
+              '❌ Some checks failed. Please review the issues above and update your submission.'}
+            
+            <details>
+            <summary>📚 Guidelines</summary>
+            
+            - Ensure \`plugin.json\` contains all required fields
+            - \`releases\` array must contain at least one release with \`downloadUrl\`
+            - All download URLs must be accessible and return HTTP 200
+            - Use HTTPS for all download URLs
+            - Host ZIP files in your plugin repository (e.g., GitHub Releases)
+            - Follow [plugin development guidelines](../blob/main/CONTRIBUTING.md)
+            </details>`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Set status
+        if: steps.validation.outputs.status == 'failure'
+        run: |
+          echo "::error::Plugin validation failed"
+          exit 1

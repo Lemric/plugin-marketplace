@@ -1,7 +1,7 @@
 # Dependencies
 /vendor/
 composer.lock
-
+*.cache
 # Build artifacts
 /dist/*.json
 /_site/
