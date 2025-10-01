@@ -17,8 +17,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 final class MarketplaceIndexBuilder
 {
-    private const PLUGINS_DIR = __DIR__ . '/../plugins';
-    private const DIST_DIR = __DIR__ . '/../dist';
+    private const string PLUGINS_DIR = __DIR__ . '/../plugins';
+    private const string DIST_DIR = __DIR__ . '/../dist';
 
     private array $plugins = [];
     private array $categories = [];
@@ -26,7 +26,7 @@ final class MarketplaceIndexBuilder
 
     public function build(): void
     {
-        echo "🔨 Building marketplace index...\n\n";
+        echo "Building marketplace index...\n\n";
 
         $this->ensureDistDirectory();
         $this->scanPlugins();
@@ -37,13 +37,13 @@ final class MarketplaceIndexBuilder
         $this->printSummary();
 
         if (!empty($this->errors)) {
-            echo "\n⚠️  Warnings:\n";
+            echo "\nWarnings:\n";
             foreach ($this->errors as $error) {
                 echo "  - $error\n";
             }
         }
 
-        echo "\n✅ Marketplace index built successfully!\n";
+        echo "\nMarketplace index built successfully!\n";
     }
 
     private function ensureDistDirectory(): void
@@ -57,14 +57,14 @@ final class MarketplaceIndexBuilder
         foreach ($dirs as $dir) {
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
-                echo "📁 Created directory: $dir\n";
+                echo "Created directory: $dir\n";
             }
         }
     }
 
     private function scanPlugins(): void
     {
-        echo "📦 Scanning plugins directory...\n";
+        echo "Scanning plugins directory...\n";
 
         if (!is_dir(self::PLUGINS_DIR)) {
             throw new RuntimeException('Plugins directory not found: ' . self::PLUGINS_DIR);
@@ -74,7 +74,7 @@ final class MarketplaceIndexBuilder
 
         foreach ($pluginDirs as $pluginDir) {
             $pluginName = basename($pluginDir);
-            echo "  Processing: $pluginName\n";
+            echo "Processing: $pluginName\n";
 
             try {
                 $plugin = $this->processPlugin($pluginDir, $pluginName);
@@ -175,14 +175,13 @@ final class MarketplaceIndexBuilder
 
     private function generateIndexFiles(): void
     {
-        echo "📝 Generating index.json...\n";
+        echo "Generating index.json...\n";
 
         $index = [
                 'version' => '1.0',
                 'generated' => date('c'),
                 'totalPlugins' => count($this->plugins),
                 'plugins' => array_map(function($plugin) {
-                    // Index zawiera tylko podstawowe info
                     return [
                             'name' => $plugin['name'],
                             'displayName' => $plugin['displayName'] ?? $plugin['name'],
@@ -206,7 +205,7 @@ final class MarketplaceIndexBuilder
 
     private function generatePluginFiles(): void
     {
-        echo "📝 Generating individual plugin files...\n";
+        echo "Generating individual plugin files...\n";
 
         foreach ($this->plugins as $name => $plugin) {
             $filename = self::DIST_DIR . "/plugins/$name.json";
@@ -216,7 +215,7 @@ final class MarketplaceIndexBuilder
 
     private function generateCategoryFiles(): void
     {
-        echo "📝 Generating category files...\n";
+        echo "Generating category files...\n";
 
         foreach ($this->categories as $category => $pluginNames) {
             $plugins = array_map(function($name) {
@@ -245,12 +244,12 @@ final class MarketplaceIndexBuilder
 
     private function generateCategoriesIndex(): void
     {
-        echo "📝 Generating categories.json...\n";
+        echo "Generating categories.json...\n";
 
         $categoriesIndex = [
                 'version' => '1.0',
                 'generated' => date('c'),
-                'categories' => array_map(function($category, $pluginNames) {
+                'categories' => array_map(function(string $category, array $pluginNames) {
                     return [
                             'name' => $category,
                             'displayName' => ucfirst($category),
@@ -278,14 +277,13 @@ final class MarketplaceIndexBuilder
 
     private function getPublicUrl(string $path): string
     {
-        // GitHub Pages URL - zmień na swój
         $baseUrl = getenv('MARKETPLACE_URL') ?: 'https://marketplace.lemric.com';
         return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
     }
 
     private function printSummary(): void
     {
-        echo "\n📊 Summary:\n";
+        echo "\nSummary:\n";
         echo "  Total plugins: " . count($this->plugins) . "\n";
         echo "  Categories: " . count($this->categories) . "\n";
 
@@ -304,7 +302,7 @@ try {
     $builder->build();
     exit(0);
 } catch (Exception $e) {
-    echo "\n❌ Error: " . $e->getMessage() . "\n";
+    echo "\nError: " . $e->getMessage() . "\n";
     echo $e->getTraceAsString() . "\n";
     exit(1);
 }
