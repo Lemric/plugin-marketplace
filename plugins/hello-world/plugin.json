@@ -1,7 +1,7 @@
 {
   "name": "hello-world",
   "displayName": "Hello World Plugin",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "A simple example plugin that demonstrates the basic structure and functionality",
   "longDescription": "This is a comprehensive example plugin that shows how to create, structure, and deploy a plugin for LemricPluginBundle. It includes hooks, configuration, and services.",
   "author": "Lemric Team",
@@ -31,16 +31,8 @@
   },
   "releases": [
     {
-      "version": "1.0.1",
-      "downloadUrl": "https://github.com/lemric/hello-world-plugin/releases/download/v1.0.1/hello-world-1.0.1.zip",
-      "releaseDate": "2025-01-15",
-      "checksum": "sha256:abc123def456789...",
-      "size": 52428,
-      "notes": "Fixed timezone handling and improved documentation"
-    },
-    {
       "version": "1.0.0",
-      "downloadUrl": "https://github.com/lemric/hello-world-plugin/releases/download/v1.0.0/hello-world-1.0.0.zip",
+      "downloadUrl": "https://github.com/Lemric/BatchRequest/archive/refs/tags/2.1.4.zip",
       "releaseDate": "2025-01-01",
       "checksum": "sha256:def456789abc123...",
       "size": 50000,
